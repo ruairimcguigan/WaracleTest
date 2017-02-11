@@ -17,10 +17,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.waracle.androidtest.CakeInteractor;
+import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.ImageLoader;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.StreamUtils;
+import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.presenter.CakePresenter;
 import com.waracle.androidtest.utils.Constant;
 
@@ -35,7 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class CakeView extends AppCompatActivity implements CakeInteractor{
+public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor{
     public static final String TAG = CakeView.class.getSimpleName();
     RecyclerView listView;
     CakePresenter presenter;
@@ -98,12 +99,12 @@ public class CakeView extends AppCompatActivity implements CakeInteractor{
     }
 
     @Override
-    public void fetchData() {
+    public void executeFetchData(String uri) {
 
     }
 
     @Override
-    public void updateView() {
+    public void updateView(Cake cake) {
 
     }
 

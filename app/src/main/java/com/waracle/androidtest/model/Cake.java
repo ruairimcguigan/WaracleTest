@@ -1,5 +1,6 @@
 package com.waracle.androidtest.model;
 
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
@@ -10,6 +11,8 @@ public class Cake {
 
     private String title, desc;
     private String image;
+
+    private Bitmap bitmap;
 
     public String getTitle() {
         return title;
@@ -33,6 +36,14 @@ public class Cake {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     @Override
