@@ -8,7 +8,7 @@ NOTE: PLEASE DO NOT USE THIRD PARTY LIBRARIES. However, feel free to state which
 
 Attached you’ll find the code for a simple mobile app to browse cakes. Unfortunately, the developer who wrote this code is no longer employed by the company as we had some concerns over his ability. The project compiles but the app crashes as soon as it runs.
 
-The app loads a JSON feed containing a repeated list of cakes, with title, image and description from a URL, then displays the contents of the feed in a scrollable list.
+The app loads a JSON feed containing a repeated list of cakes, with title, image and desc from a URL, then displays the contents of the feed in a scrollable list.
 
 We would like you to fix the crash bug, ensure the functionality of the app works as expected (all images display correctly on the table, all text is readable) and performs smoothly.  Use of 3rd party libraries are prohibited for this project due to its sensitive nature.
 

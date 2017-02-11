@@ -8,38 +8,38 @@ import android.widget.ImageView;
 
 public class Cake {
 
-    private String name, description;
-    private ImageView image;
+    private String title, desc;
+    private String image;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
-    public ImageView getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(ImageView image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
     @Override
     public String toString() {
         return "Cake{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "title='" + title + '\'' +
+                ", desc='" + desc + '\'' +
                 ", image=" + image +
                 '}';
     }

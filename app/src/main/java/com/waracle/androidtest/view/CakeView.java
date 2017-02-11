@@ -1,4 +1,4 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -17,7 +17,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.waracle.androidtest.CakeInteractor;
+import com.waracle.androidtest.ImageLoader;
+import com.waracle.androidtest.R;
+import com.waracle.androidtest.StreamUtils;
 import com.waracle.androidtest.presenter.CakePresenter;
+import com.waracle.androidtest.utils.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,12 +36,10 @@ import java.net.URL;
 
 
 public class CakeView extends AppCompatActivity implements CakeInteractor{
-
+    public static final String TAG = CakeView.class.getSimpleName();
     RecyclerView listView;
     CakePresenter presenter;
 
-    private static String JSON_URL = "https://gist.githubusercontent.com/hart88/198f29ec5114a3ec3460/" +
-            "raw/8dd19a88f9b8d24c23d9960f3300d0c917a4f07c/cake.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +47,13 @@ public class CakeView extends AppCompatActivity implements CakeInteractor{
         setContentView(R.layout.activity_main);
         initViews();
         attachPresenter();
+        Log.d(TAG, "onCreate: Check URL: " + Constant.buildJSONURL());
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.container, new PlaceholderFragment())
+//                    .commit();
+//        }
     }
 
     private void attachPresenter() {
@@ -146,7 +150,7 @@ public class CakeView extends AppCompatActivity implements CakeInteractor{
 
 
         private JSONArray loadData() throws IOException, JSONException {
-            URL url = new URL(JSON_URL);
+            URL url = new URL(Constant.buildJSONURL());
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
