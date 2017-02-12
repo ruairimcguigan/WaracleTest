@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.waracle.androidtest.Interactors.CakeInteractor;
@@ -20,11 +22,13 @@ import com.waracle.androidtest.presenter.CakePresenter;
 public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor{
 
     public static final String TAG = CakeView.class.getSimpleName();
+    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
+
     RecyclerView listView;
     CakePresenter presenter;
     Toolbar toolbar;
     CakePresenter.WorkerFragment worker;
-    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
+    ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +40,12 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
         FragmentManager manager = getSupportFragmentManager();
         worker = (CakePresenter.WorkerFragment) manager.findFragmentByTag(TAG_WORKER_FRAGMENT);
 
-        //if the fragment is non-null, then it is currently being retained across a config change
         if (worker == null){
             worker = new CakePresenter.WorkerFragment();
             Log.d(TAG, "initWorker: Worker Fragment created!");
             manager.beginTransaction().add(worker, TAG_WORKER_FRAGMENT).commit();
             Toast.makeText(this, "Worker Frag created!", Toast.LENGTH_SHORT).show();
         }
-
-
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, new PlaceholderFragment())
-//                    .commit();
-//        }
     }
 
     private void initMenuBar() {
@@ -62,6 +58,7 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
     }
 
     private void initViews() {
+        progress = (ProgressBar)findViewById(R.id.progressBar);
         listView = (RecyclerView) findViewById(R.id.cake_list_view);
         listView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -88,12 +85,12 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
 
     @Override
     public void showProgress() {
-        Toast.makeText(this, "Fetching data", Toast.LENGTH_SHORT).show();
+        progress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        Toast.makeText(this, "Data Received", Toast.LENGTH_SHORT).show();
+        progress.setVisibility(View.GONE);
     }
 
     @Override
