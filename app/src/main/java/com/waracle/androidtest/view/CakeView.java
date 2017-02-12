@@ -17,12 +17,12 @@ import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.presenter.CakePresenter;
+import com.waracle.androidtest.utils.Constant;
 
 
 public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor{
 
     public static final String TAG = CakeView.class.getSimpleName();
-    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
 
     RecyclerView listView;
     CakePresenter presenter;
@@ -35,22 +35,20 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        initMenuBar();
         attachPresenter();
-        FragmentManager manager = getSupportFragmentManager();
-        worker = (CakePresenter.WorkerFragment) manager.findFragmentByTag(TAG_WORKER_FRAGMENT);
-
-        if (worker == null){
-            worker = new CakePresenter.WorkerFragment();
-            Log.d(TAG, "initWorker: Worker Fragment created!");
-            manager.beginTransaction().add(worker, TAG_WORKER_FRAGMENT).commit();
-            Toast.makeText(this, "Worker Frag created!", Toast.LENGTH_SHORT).show();
-        }
+        createRetainedStateWorkerClass();
     }
 
-    private void initMenuBar() {
-      toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    private void createRetainedStateWorkerClass() {
+        FragmentManager manager = getSupportFragmentManager();
+        // check if created
+        worker = (CakePresenter.WorkerFragment) manager.findFragmentByTag(Constant.TAG_WORKER_FRAGMENT);
+
+        // if not - create one
+        if (worker == null){
+            worker = new CakePresenter.WorkerFragment();
+            manager.beginTransaction().add(worker, Constant.TAG_WORKER_FRAGMENT).commit();
+        }
     }
 
     private void attachPresenter() {
@@ -58,6 +56,8 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
     }
 
     private void initViews() {
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         progress = (ProgressBar)findViewById(R.id.progressBar);
         listView = (RecyclerView) findViewById(R.id.cake_list_view);
         listView.setLayoutManager(new LinearLayoutManager(this));

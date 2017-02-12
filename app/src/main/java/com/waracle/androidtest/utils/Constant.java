@@ -25,4 +25,6 @@ public class Constant {
                 .appendPath("cake.json");
         return builder.build().toString();
     }
+
+    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
 }
