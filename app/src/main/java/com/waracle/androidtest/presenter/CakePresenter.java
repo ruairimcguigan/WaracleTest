@@ -1,6 +1,5 @@
 package com.waracle.androidtest.presenter;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,26 +24,21 @@ import java.util.List;
 
 public class CakePresenter implements CakeInteractor.CakeModelInteractor {
 
-    CakeInteractor.CakeViewInteractor view;
-    CakePresenter.WorkerFragment worker;
     public static final String TAG = CakePresenter.class.getSimpleName();
+    CakeInteractor.CakeViewInteractor view;
 
     public CakePresenter(CakeInteractor.CakeViewInteractor view) {
         this.view = view;
     }
 
-    public void executeTask() {
+    public void executeFetchCakeTask() {
         WorkerFragment.fetchTask(Constant.buildJSONURL());
     }
 
+    // Worker Fragment Callbacks
     @Override
     public void onPreExecute() {
         view.showProgress();
-    }
-
-    @Override
-    public void onProgressUpdate(int percent) {
-
     }
 
     @Override
@@ -64,10 +58,10 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
         CakePresenter presenter;
         /**
          * Callback interface through which the fragment will report the
-         * task's progress and results back to the Activity.
+         * fetchCakeTask's progress and results back to the Activity.
          */
         private CakeInteractor.CakeModelInteractor callbacks;
-        private static FetchCakeDataTask task;
+        private static FetchCakeDataTask fetchCakeTask;
 
         /**
          * This method will only be called once when the retained
@@ -79,20 +73,20 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
 
             // Retain this fragment across config changes
             setRetainInstance(true);
-            initCakeTask();
-            presenter = new CakePresenter((CakeInteractor.CakeViewInteractor) getActivity());
-            Toast.makeText(getActivity(), "Worker Fragment Created", Toast.LENGTH_SHORT).show();
+            getCakeTask();
+            getPresenterReference();
         }
 
-        public void initCakeTask() {
-            task = new FetchCakeDataTask();
-            Toast.makeText(getActivity(), "Cake task created", Toast.LENGTH_SHORT).show();
+        public void getPresenterReference() {
+            presenter = new CakePresenter((CakeInteractor.CakeViewInteractor) getActivity());
+        }
+
+        public void getCakeTask() {
+            fetchCakeTask = new FetchCakeDataTask();
         }
 
         public static void fetchTask(String url) {
-            task.executeTask(url);
-            Log.d(TAG, "fetchTask: EXECUTED!");
-
+            fetchCakeTask.executeTask(url);
         }
 
         /**
@@ -100,19 +94,13 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
          * Activity instance.
          */
         @Override
-        public void onAttach(Context activity) {
-            super.onAttach(activity);
-            callbacks = (CakeInteractor.CakeModelInteractor) getView();
-        }
-
-        @Override
         public void onDetach() {
             super.onDetach();
             callbacks = null;
         }
 
         /**
-         * A work task that performs background fetching of cake data and
+         * A work fetchCakeTask that performs background fetching of cake data and
          * proxies progress updates and results back to the host Activity.
          * <p>
          * Note: that we need to check if the callbacks are null in each
@@ -130,7 +118,6 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
             @Override
             protected void onPreExecute() {
                 if (presenter != null) {
-//                    callbacks.onPreExecute();
                     presenter.onPreExecute();
                 }
             }
@@ -151,22 +138,11 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
                     cakes = JsonParser.parseCakeFeed(content);
 
 //                    todo - handle caching of bitmaps
-//                    if (cakes != null){
-//                        for (Cake cake : cakes){
-//
-//                        }
-//                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return cakes;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... percent) {
-                if (presenter != null) {
-                    presenter.onProgressUpdate(percent[0]);
-                }
             }
 
             @Override

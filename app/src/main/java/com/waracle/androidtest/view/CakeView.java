@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.model.Cake;
@@ -75,7 +74,7 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
         switch (item.getItemId()){
             case R.id.action_fetch:
                 // Execute background task
-                presenter.executeTask();
+                presenter.executeFetchCakeTask();
                 break;
             case R.id.action_refresh:
                 // refresh list

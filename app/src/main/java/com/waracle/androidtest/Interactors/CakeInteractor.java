@@ -14,8 +14,6 @@ public interface CakeInteractor {
 
         void onPreExecute();
 
-        void onProgressUpdate(int percent);
-
         void onPostExecute(List<Cake> data);
     }
 
