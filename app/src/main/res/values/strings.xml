@@ -4,4 +4,5 @@
     <string title="action_refresh">Refresh</string>
     <string name="app_name">Waracle Technical Test</string>
     <string name="action_refresh">Refresh</string>
+    <string name="fetch_data">Fetch</string>
 </resources>

@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.CakeView">
     <item
+        android:id="@+id/action_fetch"
+        android:title="@string/fetch_data"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/action_refresh"
         android:title="@string/action_refresh"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         app:showAsAction="never" />
 </menu>

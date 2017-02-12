@@ -10,17 +10,21 @@ import java.util.List;
 
 public interface CakeInteractor {
 
-     interface CakeModelInteractor {
+    interface CakeModelInteractor {
+
         void onPreExecute();
+
         void onProgressUpdate(int percent);
-        void onCancelled();
+
         void onPostExecute(List<Cake> data);
     }
 
-     interface CakeViewInteractor {
+    interface CakeViewInteractor {
+
         void showProgress();
+
         void hideProgress();
-        void executeFetchData(String url);
+
         void updateView(Cake cake);
     }
 }

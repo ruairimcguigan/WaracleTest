@@ -32,8 +32,18 @@ public class ImageLoader {
             throw new InvalidParameterException("URL is empty!");
         }
 
-        // Can you think of a way to improve loading of bitmaps
-        // that have already been loaded previously??
+        //Use a Memory Cache
+        // A memory cache offers fast access to bitmaps at the cost of taking up valuable
+        // application memory. The LruCache class (also available in the Support Library
+        // for use back to API Level 4) is particularly well suited to the task of caching
+        // bitmaps, keeping recently referenced objects in a strong referenced LinkedHashMap
+        // and evicting the least recently used member before the cache exceeds its designated size
+
+        // Previously, popular memory cache implementation was a SoftReference or WeakReference bitmap cache,
+        // Starting from Android 2.3 (API Level 9) the garbage collector is more aggressive with
+        // collecting soft/weak references which makes them fairly ineffective.
+
+
 
         try {
             setImageView(imageView, convertToBitmap(loadImageData(url)));

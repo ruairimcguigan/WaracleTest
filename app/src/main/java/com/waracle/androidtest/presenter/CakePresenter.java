@@ -1,15 +1,24 @@
 package com.waracle.androidtest.presenter;
 
-import android.app.Fragment;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.FragmentManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.model.network.HttpManager;
 import com.waracle.androidtest.model.parser.JsonParser;
+import com.waracle.androidtest.utils.Constant;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +32,18 @@ import java.util.List;
 public class CakePresenter implements CakeInteractor.CakeModelInteractor{
 
     CakeInteractor.CakeViewInteractor view;
+    CakeInteractor.CakeModelInteractor model;
     List<Cake> cakeList = new ArrayList<>();
+    CakePresenter.WorkerFragment worker;
+    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
+    public static final String TAG = CakePresenter.class.getSimpleName();
 
     public CakePresenter(CakeInteractor.CakeViewInteractor view) {
         this.view = view;
+    }
+    
+    public void executeTask(){
+            WorkerFragment.fetchTask(Constant.buildJSONURL());
     }
 
     @Override
@@ -40,28 +57,25 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
     }
 
     @Override
-    public void onCancelled() {
-
-    }
-
-    @Override
     public void onPostExecute(List<Cake> cakes) {
         if (cakes != null){
+            view.hideProgress();
             for(Cake cake : cakes){
                 view.updateView(cake);
-
+                Log.d(TAG, "doInBackground: Retrieved list: " + cakes.toString() + "\n");
             }
         }
     }
 
     public static class WorkerFragment extends Fragment {
 
+        List<Cake> cakes = new ArrayList<>();
         /**
          * Callback interface through which the fragment will report the
          * task's progress and results back to the Activity.
          */
         private CakeInteractor.CakeModelInteractor callbacks;
-        private FetchCakeDataTask task;
+        private static FetchCakeDataTask task;
 
         /**
          * This method will only be called once when the retained
@@ -73,9 +87,19 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
 
             // Retain this fragment across config changes
             setRetainInstance(true);
+            initCakeTask();
+            Toast.makeText(getActivity(), "Worker Fragment Created", Toast.LENGTH_SHORT).show();
+        }
 
+        public void initCakeTask() {
             task = new FetchCakeDataTask();
-            task.execute();
+            Toast.makeText(getActivity(), "Cake task created", Toast.LENGTH_SHORT).show();
+        }
+
+        public static void fetchTask(String url){
+            task.executeTask(url);
+            Log.d(TAG, "fetchTask: EXECUTED!");
+
         }
 
         /**
@@ -85,7 +109,7 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
         @Override
         public void onAttach(Context activity) {
             super.onAttach(activity);
-            callbacks = (CakeInteractor.CakeModelInteractor) activity;
+            callbacks = (CakeInteractor.CakeModelInteractor) getView();
         }
 
         @Override
@@ -104,6 +128,12 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
          */
         private class FetchCakeDataTask extends AsyncTask<String, Integer, List<Cake>> {
 
+            public final String TAG = WorkerFragment.class.getSimpleName();
+
+            public void executeTask(String url){
+                new FetchCakeDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+            }
+
             @Override
             protected void onPreExecute() {
                 if (callbacks != null) {
@@ -119,20 +149,23 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
             @Override
             protected List doInBackground(String... params) {
                 String content = "";
+
                 InputStream inputStream = null;
                 Bitmap bitmap;
                 try{
                     content = HttpManager.getData(params[0]);
-                    List<Cake> cakes = JsonParser.parseCakeFeed(content);
-                    if (cakes != null){
-                        for (Cake cake : cakes){
+                    cakes = JsonParser.parseCakeFeed(content);
 
-                        }
-                    }
+//                    todo - handle caching of bitmaps
+//                    if (cakes != null){
+//                        for (Cake cake : cakes){
+//
+//                        }
+//                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                return null;
+                return cakes;
             }
 
             @Override
@@ -144,6 +177,7 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor{
 
             @Override
             protected void onPostExecute(List<Cake> cakes) {
+                    Log.d(TAG, "doInBackground: Retrieved list: " + cakes.toString() + "\n");
                 if (callbacks != null){
                     callbacks.onPostExecute(cakes);
                 }
