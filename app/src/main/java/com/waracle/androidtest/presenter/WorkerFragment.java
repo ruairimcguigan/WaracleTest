@@ -41,7 +41,7 @@ public  class WorkerFragment extends Fragment {
     }
 
     public void getPresenterReference() {
-        presenter = new CakePresenter((CakeInteractor.CakeViewInteractor) getActivity());
+        presenter = new CakePresenter((CakeInteractor.CakeViewInteractor) getView());
     }
 
     public void getCakeTask() {

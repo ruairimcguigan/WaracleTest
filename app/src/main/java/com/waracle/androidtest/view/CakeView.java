@@ -1,6 +1,7 @@
 package com.waracle.androidtest.view;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,55 +24,34 @@ import com.waracle.androidtest.utils.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor{
+import static android.R.attr.fragment;
+
+public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor {
 
     public static final String TAG = CakeView.class.getSimpleName();
-
-    RecyclerView listView;
-    CakePresenter presenter;
     Toolbar toolbar;
-    WorkerFragment worker;
-    ProgressBar progress;
-    CakeAdapter adapter;
-    List<Cake> cakeList = new ArrayList<>();
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        attachPresenter();
-        createCakeList();
-        createRetainedStateWorkerClass();
+        createCakeListView(savedInstanceState);
     }
 
-    private void createCakeList() {
-        listView.setHasFixedSize(true);
-        adapter = new CakeAdapter(cakeList);
-        listView.setAdapter(getAdapter());
-    }
-
-    private void createRetainedStateWorkerClass() {
-        FragmentManager manager = getSupportFragmentManager();
-        // check if created
-        worker = (WorkerFragment) manager.findFragmentByTag(Constant.TAG_WORKER_FRAGMENT);
-
-        // if not - create one
-        if (worker == null){
-            worker = new WorkerFragment();
-            manager.beginTransaction().add(worker, Constant.TAG_WORKER_FRAGMENT).commit();
+    private void createCakeListView(Bundle savedInstanceState) {
+        // First time init, create the UI.
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.container,
+                    new CakeListView(), "listFrag").commit();
         }
-    }
-    private void attachPresenter() {
-        presenter = new CakePresenter(this);
     }
 
     private void initViews() {
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         progress = (ProgressBar)findViewById(R.id.progressBar);
-        listView = (RecyclerView) findViewById(R.id.cake_list_view);
-        listView.setLayoutManager(new LinearLayoutManager(this));
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -83,15 +63,22 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_fetch:
                 // Execute background task
-                presenter.executeFetchCakeTask();
+                executeCakeTask();
                 break;
             case R.id.action_refresh:
                 // refresh list
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void executeCakeTask() {
+        Fragment cakeListView = getSupportFragmentManager().findFragmentByTag("listFrag");
+        if (cakeListView instanceof CakeListView) {
+            ((CakeListView) cakeListView).executeTask();
+        }
     }
 
     @Override
@@ -106,161 +93,6 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
 
     @Override
     public void updateView(List<Cake> cakes) {
-        adapter.populate(cakes);
-        Log.d(TAG, "updateView: Data received: " + cakes);
-    }
 
-    public CakeAdapter getAdapter() {
-        return adapter = new CakeAdapter(cakeList);
     }
-//
-//    /**
-//     * Fragment is responsible for loading in some JSON and
-//     * then displaying a list of cakes with images.
-//     * Fix any crashes
-//     * Improve any performance issues
-//     * Use good coding practices to make code more secure
-//     */
-//    public static class PlaceholderFragment extends ListFragment {
-//
-//        private static final String TAG = PlaceholderFragment.class.getSimpleName();
-//
-//        private ListView mListView;
-//        private MyAdapter mAdapter;
-//
-//        public PlaceholderFragment() { /**/ }
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-//            mListView = (ListView) rootView.findViewById(R.id.cake_list_view);
-//            return rootView;
-//        }
-//
-//        @Override
-//        public void onActivityCreated(Bundle savedInstanceState) {
-//            super.onActivityCreated(savedInstanceState);
-//
-//            // Create and set the list adapter.
-//            mAdapter = new MyAdapter();
-//            mListView.setAdapter(mAdapter);
-//
-//            // Load data from net.
-//            try {
-//                JSONArray array = loadData();
-//                mAdapter.setItems(array);
-//            } catch (IOException | JSONException e) {
-//                Log.e(TAG, e.getMessage());
-//            }
-//        }
-//
-//
-//        private JSONArray loadData() throws IOException, JSONException {
-//            URL url = new URL(Constant.buildJSONURL());
-//            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//            try {
-//                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-//
-//                // Can you think of a way to improve the performance of loading data
-//                // using HTTP headers???
-//
-//                // Also, Do you trust any utils thrown your way????
-//
-//                byte[] bytes = StreamUtils.readUnknownFully(in);
-//
-//                // Read in charset of HTTP content.
-//                String charset = parseCharset(urlConnection.getRequestProperty("Content-Type"));
-//
-//                // Convert byte array to appropriate encoded string.
-//                String jsonText = new String(bytes, charset);
-//
-//                // Read string as JSON.
-//                return new JSONArray(jsonText);
-//            } finally {
-//                urlConnection.disconnect();
-//            }
-//        }
-//
-//        /**
-//         * Returns the charset specified in the Content-Type of this header,
-//         * or the HTTP default (ISO-8859-1) if none can be found.
-//         */
-//        public static String parseCharset(String contentType) {
-//            if (contentType != null) {
-//                String[] params = contentType.split(",");
-//                for (int i = 1; i < params.length; i++) {
-//                    String[] pair = params[i].trim().split("=");
-//                    if (pair.length == 2) {
-//                        if (pair[0].equals("charset")) {
-//                            return pair[1];
-//                        }
-//                    }
-//                }
-//            }
-//            return "UTF-8";
-//        }
-//
-//        private class MyAdapter extends BaseAdapter {
-//
-//            // Can you think of a better way to represent these items???
-//            private JSONArray mItems;
-//            private ImageLoader mImageLoader;
-//
-//            public MyAdapter() {
-//                this(new JSONArray());
-//            }
-//
-//            public MyAdapter(JSONArray items) {
-//                mItems = items;
-//                mImageLoader = new ImageLoader();
-//            }
-//
-//            @Override
-//            public int getCount() {
-//                return mItems.length();
-//            }
-//
-//            @Override
-//            public Object getItem(int position) {
-//                try {
-//                    return mItems.getJSONObject(position);
-//                } catch (JSONException e) {
-//                    Log.e("", e.getMessage());
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public long getItemId(int position) {
-//                return 0;
-//            }
-//
-//            @SuppressLint("ViewHolder")
-//            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//                LayoutInflater inflater = LayoutInflater.from(getActivity());
-//                View root = inflater.inflate(R.layout.list_item_layout, parent, false);
-//                if (root != null) {
-//                    TextView title = (TextView) root.findViewById(R.id.title);
-//                    TextView desc = (TextView) root.findViewById(R.id.desc);
-//                    ImageView image = (ImageView) root.findViewById(R.id.image);
-//                    try {
-//                        JSONObject object = (JSONObject) getItem(position);
-//                        title.setText(object.getString("title"));
-//                        desc.setText(object.getString("desc"));
-//                        mImageLoader.load(object.getString("image"), image);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                return root;
-//            }
-//
-//            public void setItems(JSONArray items) {
-//                mItems = items;
-//            }
-//        }
-//    }
 }
