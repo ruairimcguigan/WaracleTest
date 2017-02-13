@@ -14,10 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.R;
+import com.waracle.androidtest.list.CakeAdapter;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.presenter.CakePresenter;
+import com.waracle.androidtest.presenter.WorkerFragment;
 import com.waracle.androidtest.utils.Constant;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class CakeView extends AppCompatActivity implements CakeInteractor.CakeViewInteractor{
 
@@ -26,8 +30,10 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
     RecyclerView listView;
     CakePresenter presenter;
     Toolbar toolbar;
-    CakePresenter.WorkerFragment worker;
+    WorkerFragment worker;
     ProgressBar progress;
+    CakeAdapter adapter;
+    List<Cake> cakeList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,21 +41,27 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
         setContentView(R.layout.activity_main);
         initViews();
         attachPresenter();
+        createCakeList();
         createRetainedStateWorkerClass();
+    }
+
+    private void createCakeList() {
+        listView.setHasFixedSize(true);
+        adapter = new CakeAdapter(cakeList);
+        listView.setAdapter(getAdapter());
     }
 
     private void createRetainedStateWorkerClass() {
         FragmentManager manager = getSupportFragmentManager();
         // check if created
-        worker = (CakePresenter.WorkerFragment) manager.findFragmentByTag(Constant.TAG_WORKER_FRAGMENT);
+        worker = (WorkerFragment) manager.findFragmentByTag(Constant.TAG_WORKER_FRAGMENT);
 
         // if not - create one
         if (worker == null){
-            worker = new CakePresenter.WorkerFragment();
+            worker = new WorkerFragment();
             manager.beginTransaction().add(worker, Constant.TAG_WORKER_FRAGMENT).commit();
         }
     }
-
     private void attachPresenter() {
         presenter = new CakePresenter(this);
     }
@@ -93,9 +105,13 @@ public class CakeView extends AppCompatActivity implements CakeInteractor.CakeVi
     }
 
     @Override
-    public void updateView(Cake cake) {
-        Log.d(TAG, "updateView: Data received: " + cake);
-        Toast.makeText(this, "Cake = " + cake, Toast.LENGTH_SHORT).show();
+    public void updateView(List<Cake> cakes) {
+        adapter.populate(cakes);
+        Log.d(TAG, "updateView: Data received: " + cakes);
+    }
+
+    public CakeAdapter getAdapter() {
+        return adapter = new CakeAdapter(cakeList);
     }
 //
 //    /**
