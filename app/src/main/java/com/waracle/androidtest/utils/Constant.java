@@ -11,8 +11,8 @@ public class Constant {
     // Http calls
     public static final String HTTP_GET = "GET";
     public static final String HTTP_PUT = "PUT";
-    public static final String HTTP_POST = "POST";
-    public static final String HTTP_DELETE = "DELETE";
+
+    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
 
     public static String buildJSONURL(){
         Uri.Builder builder = new Uri.Builder();
@@ -26,5 +26,4 @@ public class Constant {
         return builder.build().toString();
     }
 
-    public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
 }

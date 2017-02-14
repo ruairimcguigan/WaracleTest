@@ -1,10 +1,13 @@
 package com.waracle.androidtest.presenter;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
+import com.waracle.androidtest.ImageCache;
 import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.model.network.HttpManager;
@@ -12,6 +15,7 @@ import com.waracle.androidtest.model.parser.JsonParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,19 +97,28 @@ public  class WorkerFragment extends Fragment {
         @Override
         protected List doInBackground(String... params) {
             String content = "";
-
-            InputStream inputStream = null;
-            Bitmap bitmap;
             try {
                 content = HttpManager.getData(params[0]);
                 cakes = JsonParser.parseCakeFeed(content);
-
-//                    todo - handle caching of bitmaps
-
+                cacheImages(cakes);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return cakes;
+        }
+
+        private void cacheImages(List<Cake> cakes) throws IOException {
+            ImageCache cache = ImageCache.getInstance();
+            if (cakes != null) {
+                for (Cake cake : cakes) {
+                    String imageUrl = cake.getImage();
+                    InputStream inputStream = (InputStream) new URL(imageUrl).getContent();
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    cache.getCache().put(cake.getTitle(), bitmap);
+                    cake.setBitmap(cache.getCache().get(cake.getTitle()));
+                }
+                Log.i(TAG, "doInBackground: Contents of cache: " + cache.getCache().size());
+            }
         }
 
         @Override

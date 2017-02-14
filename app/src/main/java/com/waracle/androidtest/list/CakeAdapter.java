@@ -1,15 +1,16 @@
 package com.waracle.androidtest.list;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.waracle.androidtest.ImageCache;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.model.Cake;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,9 +20,11 @@ import java.util.List;
 public class CakeAdapter extends RecyclerView.Adapter<CakeViewHolder> {
     public static final String TAG = CakeAdapter.class.getSimpleName();
     private List<Cake> cakeList;
+    private ImageCache imageCache;
 
     public CakeAdapter(List<Cake> cakeList) {
         this.cakeList = cakeList;
+//        imageCache = ImageCache.getInstance();
     }
 
     public void populate (List<Cake> cakes){
@@ -48,7 +51,12 @@ public class CakeAdapter extends RecyclerView.Adapter<CakeViewHolder> {
         Cake cake = cakeList.get(position);
         holder.cakeName.setText(cake.getTitle());
         holder.cakeDescription.setText(cake.getDesc());
+        Bitmap bitmap = ImageCache.getInstance().getCache().get(cake.getTitle());
+        if(bitmap != null){
+            holder.cakePhoto.setImageBitmap(bitmap);
+        }
         holder.cakePhoto.setImageBitmap(cake.getBitmap());
+
     }
 
     @Override

@@ -23,6 +23,6 @@ public interface CakeInteractor {
 
         void hideProgress();
 
-        void updateView(List<Cake> cakes);
+        void populateAdapter(List<Cake> cakes);
     }
 }
