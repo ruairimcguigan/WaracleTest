@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.waracle.androidtest.ImageCache;
+import com.waracle.androidtest.model.cache.ImageCache;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.model.Cake;
 

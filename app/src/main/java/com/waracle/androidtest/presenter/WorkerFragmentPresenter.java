@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.waracle.androidtest.ImageCache;
-import com.waracle.androidtest.Interactors.CakeInteractor;
+import com.waracle.androidtest.model.cache.ImageCache;
+import com.waracle.androidtest.presenter.Interactors.CakeInteractor;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.model.network.HttpManager;
 import com.waracle.androidtest.model.parser.JsonParser;

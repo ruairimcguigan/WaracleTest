@@ -2,7 +2,7 @@ package com.waracle.androidtest.presenter;
 
 import android.util.Log;
 
-import com.waracle.androidtest.Interactors.CakeInteractor;
+import com.waracle.androidtest.presenter.Interactors.CakeInteractor;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.utils.Constant;
 

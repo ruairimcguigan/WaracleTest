@@ -1,4 +1,4 @@
-package com.waracle.androidtest.Interactors;
+package com.waracle.androidtest.presenter.Interactors;
 
 import com.waracle.androidtest.model.Cake;
 

@@ -1,12 +1,10 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.model.cache;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
 /**
- * Created by Ruairi on 14/02/2017.
+ * Image Lru cache
  */
 
 public class ImageCache {
