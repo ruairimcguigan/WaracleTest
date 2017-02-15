@@ -9,7 +9,7 @@ import com.waracle.androidtest.utils.Constant;
 import java.util.List;
 
 /**
- * Created by Ruairi on 10/02/2017.
+ * Intermediary class between view and model
  */
 
 public class CakePresenter implements CakeInteractor.CakeModelInteractor {
