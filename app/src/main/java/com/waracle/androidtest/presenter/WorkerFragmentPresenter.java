@@ -100,26 +100,14 @@ public  class WorkerFragmentPresenter extends Fragment {
             try {
                 content = HttpManager.getData(params[0]);
                 cakes = JsonParser.parseCakeFeed(content);
-                cacheImages(cakes);
+                // TODO: 15/02/2017 Spin up Asynctask for container for lazy loading of images
+                ImageCache.getInstance().cacheImages(cakes);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return cakes;
         }
 
-        private void cacheImages(List<Cake> cakes) throws IOException {
-            ImageCache cache = ImageCache.getInstance();
-            if (cakes != null) {
-                for (Cake cake : cakes) {
-                    String imageUrl = cake.getImage();
-                    InputStream inputStream = (InputStream) new URL(imageUrl).getContent();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    cache.getCache().put(cake.getTitle(), bitmap);
-                    cake.setBitmap(cache.getCache().get(cake.getTitle()));
-                }
-                Log.i(TAG, "doInBackground: Contents of cache: " + cache.getCache().size());
-            }
-        }
 
         @Override
         protected void onPostExecute(List<Cake> cakes) {
