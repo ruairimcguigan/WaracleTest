@@ -2,7 +2,6 @@ package com.waracle.androidtest.presenter;
 
 import android.util.Log;
 
-import com.waracle.androidtest.ImageCache;
 import com.waracle.androidtest.Interactors.CakeInteractor;
 import com.waracle.androidtest.model.Cake;
 import com.waracle.androidtest.utils.Constant;
@@ -23,7 +22,7 @@ public class CakePresenter implements CakeInteractor.CakeModelInteractor {
     }
 
     public void executeFetchCakeTask() {
-        WorkerFragment.fetchTask(Constant.buildJSONURL());
+        WorkerFragmentPresenter.fetchTask(Constant.buildJSONURL());
     }
 
     // Worker Fragment Callbacks

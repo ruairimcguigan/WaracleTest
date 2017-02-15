@@ -13,6 +13,7 @@ public class Constant {
     public static final String HTTP_PUT = "PUT";
 
     public static final String TAG_WORKER_FRAGMENT = "worker_fragment";
+    public static final String LIST_STATE = "save_list_state";
 
     public static String buildJSONURL(){
         Uri.Builder builder = new Uri.Builder();

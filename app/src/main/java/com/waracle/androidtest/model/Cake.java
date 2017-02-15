@@ -1,18 +1,40 @@
 package com.waracle.androidtest.model;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by Ruairi on 10/02/2017.
  */
 
-public class Cake {
+public class Cake implements Parcelable{
 
     private String title, desc;
     private String image;
 
     private Bitmap bitmap;
+
+    public Cake(){}
+
+    protected Cake(Parcel in) {
+        title = in.readString();
+        desc = in.readString();
+        image = in.readString();
+        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
+    }
+
+    public static final Creator<Cake> CREATOR = new Creator<Cake>() {
+        @Override
+        public Cake createFromParcel(Parcel in) {
+            return new Cake(in);
+        }
+
+        @Override
+        public Cake[] newArray(int size) {
+            return new Cake[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -53,5 +75,18 @@ public class Cake {
                 ", desc='" + desc + '\'' +
                 ", image=" + image +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(desc);
+        dest.writeString(image);
+        dest.writeParcelable(bitmap, flags);
     }
 }

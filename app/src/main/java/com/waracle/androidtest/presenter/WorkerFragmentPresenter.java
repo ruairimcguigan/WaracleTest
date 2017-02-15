@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public  class WorkerFragment extends Fragment {
+public  class WorkerFragmentPresenter extends Fragment {
 
     List<Cake> cakes = new ArrayList<>();
     CakePresenter presenter;
@@ -76,7 +76,7 @@ public  class WorkerFragment extends Fragment {
      */
     private class FetchCakeDataTask extends AsyncTask<String, Integer, List<Cake>> {
 
-        public final String TAG = WorkerFragment.class.getSimpleName();
+        public final String TAG = WorkerFragmentPresenter.class.getSimpleName();
 
         public void executeTask(String url) {
             new FetchCakeDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
